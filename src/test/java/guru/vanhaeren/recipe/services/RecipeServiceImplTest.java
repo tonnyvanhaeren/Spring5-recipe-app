@@ -1,5 +1,7 @@
 package guru.vanhaeren.recipe.services;
 
+import guru.vanhaeren.recipe.converters.RecipeCommandToRecipe;
+import guru.vanhaeren.recipe.converters.RecipeToRecipeCommand;
 import guru.vanhaeren.recipe.domain.Recipe;
 import guru.vanhaeren.recipe.repositories.RecipeRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -20,14 +22,33 @@ class RecipeServiceImplTest {
     @Mock
     RecipeRepository recipeRepository;
 
+    @Mock
+    RecipeToRecipeCommand recipeToRecipeCommand;
+
+    @Mock
+    RecipeCommandToRecipe recipeCommandToRecipe;
+
     @BeforeEach
     public  void setUp() throws Exception {
         MockitoAnnotations.openMocks(this);
-        recipeService = new RecipeServiceImpl(recipeRepository);
+        recipeService = new RecipeServiceImpl(recipeRepository, recipeCommandToRecipe, recipeToRecipeCommand);
     }
 
     @Test
-    public void getRecipeByIdTest() throws Exception {
+    void getRecipes() {
+        Recipe recipe = new Recipe();
+        HashSet recipesData = new HashSet();
+        recipesData.add(recipe);
+
+        when(recipeRepository.findAll()).thenReturn(recipesData);
+
+        Set<Recipe> recipes = recipeService.getRecipes();
+        assertEquals(recipes.size(), 1);
+        verify(recipeRepository, times(1)).findAll();
+    }
+
+    @Test
+    void findById() throws Exception {
         Recipe recipe = new Recipe();
         recipe.setId(1L);
         Optional<Recipe> recipeOptional = Optional.of(recipe);
@@ -42,15 +63,7 @@ class RecipeServiceImplTest {
     }
 
     @Test
-    void getRecipes() {
-        Recipe recipe = new Recipe();
-        HashSet recipesData = new HashSet();
-        recipesData.add(recipe);
+    void saveRecipeCommand() {
 
-        when(recipeRepository.findAll()).thenReturn(recipesData);
-
-        Set<Recipe> recipes = recipeService.getRecipes();
-        assertEquals(recipes.size(), 1);
-        verify(recipeRepository, times(1)).findAll();
     }
 }
