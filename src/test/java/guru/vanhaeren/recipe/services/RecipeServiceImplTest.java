@@ -1,5 +1,6 @@
 package guru.vanhaeren.recipe.services;
 
+import guru.vanhaeren.recipe.commands.RecipeCommand;
 import guru.vanhaeren.recipe.converters.RecipeCommandToRecipe;
 import guru.vanhaeren.recipe.converters.RecipeToRecipeCommand;
 import guru.vanhaeren.recipe.domain.Recipe;
@@ -35,7 +36,7 @@ class RecipeServiceImplTest {
     }
 
     @Test
-    void getRecipes() {
+    public void getRecipes() {
         Recipe recipe = new Recipe();
         HashSet recipesData = new HashSet();
         recipesData.add(recipe);
@@ -48,7 +49,7 @@ class RecipeServiceImplTest {
     }
 
     @Test
-    void findById() throws Exception {
+    public void findById() throws Exception {
         Recipe recipe = new Recipe();
         recipe.setId(1L);
         Optional<Recipe> recipeOptional = Optional.of(recipe);
@@ -63,7 +64,43 @@ class RecipeServiceImplTest {
     }
 
     @Test
-    void saveRecipeCommand() {
+    public void saveRecipeCommand() {
 
+    }
+
+    @Test
+    public void findCommandById() {
+        Recipe recipe = new Recipe();
+        recipe.setId(1L);
+        Optional<Recipe> recipeOptional = Optional.of(recipe);
+
+        when(recipeRepository.findById(anyLong())).thenReturn(recipeOptional);
+
+        RecipeCommand recipeCommand = new RecipeCommand();
+        recipeCommand.setId(1L);
+
+        when(recipeToRecipeCommand.convert(any())).thenReturn(recipeCommand);
+
+        RecipeCommand commandById = recipeService.findCommandById(1L);
+
+        assertNotNull(commandById, "Null recipe returned");
+
+        verify(recipeRepository, times(1)).findById(anyLong());
+        verify(recipeRepository, never()).findAll();
+    }
+
+
+    @Test
+    void deleteById() {
+        //given
+        Long idToDelete = Long.valueOf(2L);
+
+        //when
+        recipeService.deleteById(idToDelete);
+
+        //no 'when', since method has void return type
+
+        //then
+        verify(recipeRepository, times(1)).deleteById(anyLong());
     }
 }
