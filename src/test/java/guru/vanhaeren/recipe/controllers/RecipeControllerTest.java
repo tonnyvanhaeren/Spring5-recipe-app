@@ -20,7 +20,7 @@ import java.util.Set;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -95,14 +95,16 @@ class RecipeControllerTest {
                 .andExpect(model().attributeExists("recipe"));
     }
 
-//    @Test
-//    public void testDeleteAction() throws Exception {
-//        mockMvc.perform(get("/recipe/1/delete"))
-//                .andExpect(status().is3xxRedirection())
-//                .andExpect(view().name("redirect:/"));
-//
-//        verify(recipeService, times(1)).deleteById(anyLong());
-//    }
+    @Test
+    public void testDeleteAction() throws Exception {
+        mockMvc.perform(MockMvcRequestBuilders.get("/recipe/1/delete"))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(view().name("redirect:/"));
+
+        //no when, since method has void return type
+
+        verify(recipeService, times(1)).deleteById(anyLong());
+    }
 
 
 }
