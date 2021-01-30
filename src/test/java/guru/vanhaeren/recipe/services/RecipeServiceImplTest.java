@@ -4,7 +4,9 @@ import guru.vanhaeren.recipe.commands.RecipeCommand;
 import guru.vanhaeren.recipe.converters.RecipeCommandToRecipe;
 import guru.vanhaeren.recipe.converters.RecipeToRecipeCommand;
 import guru.vanhaeren.recipe.domain.Recipe;
+import guru.vanhaeren.recipe.exceptions.NotFoundException;
 import guru.vanhaeren.recipe.repositories.RecipeRepository;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
@@ -61,6 +63,17 @@ class RecipeServiceImplTest {
         assertNotNull(recipeReturned, "Null recipe returned");
         verify(recipeRepository, times(1)).findById(anyLong());
         verify(recipeRepository, never()).findAll();
+    }
+
+    @Test
+    public void getRecipeByIdTestNotFound() {
+        Optional<Recipe> recipeOptional = Optional.empty();
+
+        when(recipeRepository.findById(anyLong())).thenReturn(recipeOptional);
+
+        Assertions.assertThrows(NotFoundException.class, () -> recipeService.findById(1L));
+
+        //should go boom
     }
 
     @Test

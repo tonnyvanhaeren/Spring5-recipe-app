@@ -1,5 +1,8 @@
 package guru.vanhaeren.recipe.services;
 
+import guru.vanhaeren.recipe.commands.RecipeCommand;
+import guru.vanhaeren.recipe.converters.RecipeCommandToRecipe;
+import guru.vanhaeren.recipe.converters.RecipeToRecipeCommand;
 import guru.vanhaeren.recipe.domain.Recipe;
 import guru.vanhaeren.recipe.repositories.RecipeRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -7,10 +10,14 @@ import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockMultipartFile;
+import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -54,4 +61,5 @@ class ImageServiceImplTest {
         Recipe savedRecipe = argumentCaptor.getValue();
         assertEquals(multipartFile.getBytes().length, savedRecipe.getImage().length);
     }
+
 }

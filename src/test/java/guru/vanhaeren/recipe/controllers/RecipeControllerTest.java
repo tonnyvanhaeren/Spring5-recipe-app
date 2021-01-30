@@ -2,6 +2,7 @@ package guru.vanhaeren.recipe.controllers;
 
 import guru.vanhaeren.recipe.commands.RecipeCommand;
 import guru.vanhaeren.recipe.domain.Recipe;
+import guru.vanhaeren.recipe.exceptions.NotFoundException;
 import guru.vanhaeren.recipe.services.RecipeService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -54,6 +55,16 @@ class RecipeControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(view().name("recipe/show"))
                 .andExpect(model().attributeExists("recipe"));
+    }
+
+    @Test
+    public void testGetRecipeNotFound() throws Exception {
+
+        when(recipeService.findById(anyLong())).thenThrow(NotFoundException.class);
+
+        mockMvc.perform(MockMvcRequestBuilders.get("/recipe/1/show"))
+                .andExpect(status().isNotFound());
+                //.andExpect(view().name("404error"));
     }
 
     @Test
